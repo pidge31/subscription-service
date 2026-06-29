@@ -1,0 +1,302 @@
+basePath: /
+definitions:
+  github_com_pidge31_subscription-service_internal.CreateSubscriptionInput:
+    properties:
+      end_date:
+        description: MM-YYYY, optional
+        type: string
+      price:
+        type: integer
+      service_name:
+        type: string
+      start_date:
+        description: MM-YYYY
+        type: string
+      user_id:
+        type: string
+    type: object
+  github_com_pidge31_subscription-service_internal.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  github_com_pidge31_subscription-service_internal.Subscription:
+    properties:
+      created_at:
+        type: string
+      end_date:
+        description: MM-YYYY
+        type: string
+      id:
+        type: string
+      price:
+        type: integer
+      service_name:
+        type: string
+      start_date:
+        description: MM-YYYY
+        type: string
+      user_id:
+        type: string
+    type: object
+  github_com_pidge31_subscription-service_internal.TotalCostResponse:
+    properties:
+      total:
+        type: integer
+    type: object
+  github_com_pidge31_subscription-service_internal.UpdateSubscriptionInput:
+    properties:
+      end_date:
+        description: MM-YYYY, optional
+        type: string
+      price:
+        type: integer
+      service_name:
+        type: string
+    type: object
+  internal.CreateSubscriptionInput:
+    properties:
+      end_date:
+        description: MM-YYYY, optional
+        type: string
+      price:
+        type: integer
+      service_name:
+        type: string
+      start_date:
+        description: MM-YYYY
+        type: string
+      user_id:
+        type: string
+    type: object
+  internal.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  internal.Subscription:
+    properties:
+      created_at:
+        type: string
+      end_date:
+        description: MM-YYYY
+        type: string
+      id:
+        type: string
+      price:
+        type: integer
+      service_name:
+        type: string
+      start_date:
+        description: MM-YYYY
+        type: string
+      user_id:
+        type: string
+    type: object
+  internal.TotalCostResponse:
+    properties:
+      total:
+        type: integer
+    type: object
+  internal.UpdateSubscriptionInput:
+    properties:
+      end_date:
+        description: MM-YYYY, optional
+        type: string
+      price:
+        type: integer
+      service_name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: REST API for aggregating online subscription data.
+  title: Subscription Service API
+  version: "1.0"
+paths:
+  /subscriptions:
+    get:
+      description: List all subscriptions, optionally filtered by user_id or service_name
+      parameters:
+      - description: Filter by user UUID
+        in: query
+        name: user_id
+        type: string
+      - description: Filter by service name
+        in: query
+        name: service_name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_pidge31_subscription-service_internal.Subscription'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.ErrorResponse'
+      summary: List subscriptions
+      tags:
+      - subscriptions
+    post:
+      consumes:
+      - application/json
+      description: Add a new subscription record
+      parameters:
+      - description: Subscription data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_pidge31_subscription-service_internal.CreateSubscriptionInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.Subscription'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.ErrorResponse'
+      summary: Create subscription
+      tags:
+      - subscriptions
+  /subscriptions/{id}:
+    delete:
+      description: Remove a subscription record by ID
+      parameters:
+      - description: Subscription UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.ErrorResponse'
+      summary: Delete subscription
+      tags:
+      - subscriptions
+    get:
+      description: Get a single subscription by ID
+      parameters:
+      - description: Subscription UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.Subscription'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.ErrorResponse'
+      summary: Get subscription
+      tags:
+      - subscriptions
+    put:
+      consumes:
+      - application/json
+      description: Update service_name, price, or end_date of an existing subscription
+      parameters:
+      - description: Subscription UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Fields to update
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_pidge31_subscription-service_internal.UpdateSubscriptionInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.Subscription'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.ErrorResponse'
+      summary: Update subscription
+      tags:
+      - subscriptions
+  /subscriptions/total:
+    get:
+      description: Calculate the total cost of subscriptions over a time period
+      parameters:
+      - description: Period start (MM-YYYY)
+        in: query
+        name: from
+        required: true
+        type: string
+      - description: Period end (MM-YYYY)
+        in: query
+        name: to
+        required: true
+        type: string
+      - description: Filter by user UUID
+        in: query
+        name: user_id
+        type: string
+      - description: Filter by service name
+        in: query
+        name: service_name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.TotalCostResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_pidge31_subscription-service_internal.ErrorResponse'
+      summary: Total subscription cost
+      tags:
+      - subscriptions
+swagger: "2.0"
